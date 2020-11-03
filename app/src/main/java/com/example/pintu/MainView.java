@@ -92,7 +92,7 @@ public class MainView extends View {
                 int idx = dataTiles[i][j];
                 if (idx == ROW * COL - 1 && !isSuccess)
                     continue;
-                canvas.drawBitmap(bitmapTiles[idx], j * tileWidth, i * tileHeight, paint);
+                canvas.drawBitmap(bitmapTiles[idx], j * tileWidth, i * tileHeight+500, paint);
             }
         }
     }
@@ -116,7 +116,7 @@ public class MainView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            com.example.pintu.Point point = xyToIndex((int) event.getX(), (int) event.getY());
+            com.example.pintu.Point point = xyToIndex((int) event.getX(), (int) event.getY()-500);
 
             for (int i = 0; i < dir.length; i++) {
                 int newX = point.getX() + dir[i][0];

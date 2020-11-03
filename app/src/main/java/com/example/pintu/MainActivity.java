@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static int getScreenHeight() {
-        return screenHeight;
+        return getScreenWidth();
     }
 
     @Override
