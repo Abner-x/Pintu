@@ -11,6 +11,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+
+import com.example.pintu.util.MLog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,16 +22,17 @@ import static android.app.AlertDialog.*;
 
 public class MainView extends View {
     private static final String TAG = MainView.class.getSimpleName();
-    private Context context;
-    private Bitmap back;
+    private final Context context;
+    private final int WIDTH = MainActivity2.getScreenWidth();//获取屏幕宽度
+    private Bitmap back;//背景
     private Paint paint;
     private int tileWidth;
     private int tileHeight;
-    private Bitmap[] bitmapTiles;
-    private int[][] dataTiles;
-    private com.example.pintu.Board tilesBoard;
-    private final int COL = 3;
-    private final int ROW = 3;
+    private Bitmap[] bitmapTiles;//存储子图片
+    private int[][] dataTiles;//记录移动后的图片位置
+    private Board tilesBoard;
+    private  int COL;
+    private  int ROW;
     private int[][] dir = {
             {-1, 0},//左
             {0, -1},//上
@@ -39,14 +43,16 @@ public class MainView extends View {
 
     int steps = 0;
 
-    public MainView(Context context) {
+    public MainView(Context context,int col) {
         super(context);
         this.context = context;
+        this.COL = col;
+        this.ROW = col;
         paint = new Paint();
         paint.setAntiAlias(true);
         init();
         startGame();
-        com.luoye.pintu.util.MLog.d(TAG, MainActivity.getScreenWidth() + "," + MainActivity.getScreenHeight());
+        MLog.d(TAG, WIDTH + "," + WIDTH);
     }
 
     /**
@@ -58,7 +64,7 @@ public class MainView extends View {
         try {
             InputStream assetInputStream = assetManager.open("back.jpg");
             Bitmap bitmap = BitmapFactory.decodeStream(assetInputStream);
-            back = Bitmap.createScaledBitmap(bitmap, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), true);
+            back = Bitmap.createScaledBitmap(bitmap, WIDTH, WIDTH, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,7 +83,7 @@ public class MainView extends View {
      * 开始游戏
      */
     private void startGame() {
-        tilesBoard = new com.example.pintu.Board();
+        tilesBoard = new Board();
         dataTiles = tilesBoard.createRandomBoard(ROW, COL);
         isSuccess = false;
         steps = 0;
@@ -86,7 +92,10 @@ public class MainView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(Color.GRAY);
+        canvas.drawColor(Color.WHITE);
+        paint.setTextSize(100);
+        paint.setColor(Color.BLACK);
+        canvas.drawText("拼图大作战",500,300,paint);
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
                 int idx = dataTiles[i][j];
@@ -104,19 +113,19 @@ public class MainView extends View {
      * @param y
      * @return
      */
-    private com.example.pintu.Point xyToIndex(int x, int y) {
+    private Point xyToIndex(int x, int y) {
         int extraX = x % tileWidth > 0 ? 1 : 0;
         int extraY = x % tileWidth > 0 ? 1 : 0;
         int col = x / tileWidth + extraX;
         int row = y / tileHeight + extraY;
 
-        return new com.example.pintu.Point(col - 1, row - 1);
+        return new Point(col - 1, row - 1);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            com.example.pintu.Point point = xyToIndex((int) event.getX(), (int) event.getY()-500);
+            Point point = xyToIndex((int) event.getX(), (int) event.getY()-500);
 
             for (int i = 0; i < dir.length; i++) {
                 int newX = point.getX() + dir[i][0];
@@ -132,7 +141,7 @@ public class MainView extends View {
                         if (tilesBoard.isSuccess(dataTiles)) {
                             isSuccess = true;
                             invalidate();
-                            String successText = String.format("恭喜你拼图成功，移动了%d次", steps);
+                            String successText = String.format("恭喜你拼图成功，移动了"+steps+"次");
                             new
 
                                     Builder(context)
@@ -169,6 +178,6 @@ public class MainView extends View {
             }
             sb.append("\n");
         }
-        com.luoye.pintu.util.MLog.d(TAG, sb.toString());
+        MLog.d(TAG, sb.toString());
     }
 }

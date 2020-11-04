@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Pintu</string>
+    <string name="Title">拼图大作战</string>
+    <string name="tip">请选择难度</string>
+    <string name="easy">简单</string>
+    <string name="m">中等</string>
+    <string name="hard">困难</string>
 </resources>
