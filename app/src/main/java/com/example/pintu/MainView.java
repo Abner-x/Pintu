@@ -101,6 +101,8 @@ public class MainView extends View {
         @SuppressLint("DrawAllocation") Rect bounds = new Rect();
         paint.getTextBounds(TITLE, 0, TITLE.length(), bounds);
         canvas.drawText(TITLE, (getMeasuredWidth() >> 1) - (bounds.width() >> 1), 300, paint);
+        paint.setTextSize(70);
+        canvas.drawText("移动步数："+steps,(getMeasuredWidth() >> 1) - (bounds.width() >> 1), 400,paint);
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
                 int idx = picPosition[i][j];
